@@ -4,8 +4,8 @@ from flask import Flask
 class _OriginDBManager:
 	def __init__(self, *tables): #table classes
 		self.tables = tables
-		self._connect_databases(tables)
-		self._create_tables(tables)
+		self._connect_databases(tables) #connects the databases that the tables are affiliated to
+		self._create_tables(tables) #if the tables haven't been created before it creates them
 
 	def add_tables(self, *tables): #table classes
 		self.tables += tables
@@ -32,14 +32,21 @@ class _OriginDBManager:
 				continue
 				
 class _OriginAPIManager:
+	
+	self.default_methods = ['GET', 'POST', 'PUT', 'DELETE']
+	
 	def __init__(self, name):
 		self.app = Flask(name)
 		
-	def populate(self, *tables):
-		pass
+	def populate(self, table, methods=default_methods, filter_functions=[(lambda x: x)]):
 		
-	def start(self):
-		self.app.run()
+		
+		route = '/api/' + table.__name__
+		endpoint = route
+		self.app.add_url_rule(route, endpoint, function)
+		
+	def start(self, **options):
+		self.app.run(**options)
 		
 class Origin:
 	
@@ -53,6 +60,8 @@ class Origin:
 	def drop_tables(self, *tables):
 		self.dbManager.drop_tables(*tables)
 		
-	def start(self):
+	def _setup_api(self, )
+		
+	def start(self, **options):
 		self.apiManager.populate(*self.dbManager.tables)
-		self.apiManager.start()
+		self.apiManager.start(**options)
